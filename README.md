@@ -6,7 +6,7 @@ Los ejemplos están escritos en TypeScript y se ejecutan con Deno.
 ## Integrantes
 
 - Felipe Marulanda
-- Santiago
+- Santiago Santacruz
 
 ## Patrones utilizados
 
