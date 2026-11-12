@@ -1,0 +1,81 @@
+name: Deploy design patterns showcase to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.repository }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Install dependencies
+        run: npm ci
+      - name: Build static showcase
+        run: npm run build -- --base-href "/Uceva-Deno-Design-Patterns/"
+      - name: Add GitHub Pages route fallback
+        run: cp dist/index.html dist/404.html
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  verify:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify published site
+        env:
+          SITE_URL: ${{ needs.deploy.outputs.page_url }}
+        run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "GitHub Pages did not return a deployment URL."
+            exit 1
+          fi
+          curl --fail --silent --show-error --output /dev/null \
+            --write-out 'HTTP %{http_code}\n' \
+            --retry 12 --retry-delay 10 --retry-connrefused --retry-all-errors \
+            "$SITE_URL"
