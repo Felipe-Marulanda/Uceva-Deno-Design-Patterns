@@ -2,12 +2,12 @@
 
 Colección de ejercicios TypeScript del taller de Arquitectura de Software de
 la UCEVA. Los ejemplos se ejecutan con Deno y se agrupan en patrones
-creacionales, estructurales y de comportamiento. El showcase web es estático y
-no requiere backend.
+creacionales, estructurales y de comportamiento. El showcase web estático no
+requiere backend.
 
 ## Aplicaciones
 
-- Showcase: <https://felipe-marulanda.github.io/Uceva-Deno-Design-Patterns/>
+- URL de Pages configurada para el showcase: <https://felipe-marulanda.github.io/Uceva-Deno-Design-Patterns/>
 - Repositorio: <https://github.com/Felipe-Marulanda/Uceva-Deno-Design-Patterns>
 
 ## Requisitos e instalación
@@ -35,7 +35,7 @@ python3 -m http.server 8000
 02-Patrones-Estructurales/      Ejercicios estructurales
 03-Patrones-Comportamiento/     Ejercicios de comportamiento
 helpers/                        Utilidades compartidas
-showcase/                       Sitio estático publicado en Pages
+showcase/                       Sitio estático para Pages
 scripts/build.mjs               Copia el sitio y establece el base-href
 .github/workflows/              CI/CD y comprobación de disponibilidad
 ```
